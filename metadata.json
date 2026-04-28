@@ -1,0 +1,6 @@
+{
+  "name": "DilConnect",
+  "description": "Immersive AI companionship featuring realistic personas, emotional voice notes, and deep romantic connection with multi-language support.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["AI Chat", "Multi-language Support", "Voice Interaction"]
+}
