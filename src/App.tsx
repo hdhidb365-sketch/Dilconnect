@@ -56,122 +56,128 @@ export default function App() {
   const [selectedMedia, setSelectedMedia] = useState<{ file: File; preview: string; type: 'image' | 'video' } | null>(null);
   const [selectedReactionGoal, setSelectedReactionGoal] = useState<string>('Compliment me');
   const [theme, setTheme] = useState<'classic' | 'midnight' | 'rose' | 'forest' | 'sunset' | 'passion' | 'winter'>('classic');
-  const [vibe, setVibe] = useState<'Friendly' | 'Romantic' | 'Spicy' | 'Deep'>('Romantic');
+  const [vibe, setVibe] = useState<'Friendly' | 'Romantic' | 'Spicy' | 'Deep' | 'Shayari'>('Romantic');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
 
   const themeStyles = {
     classic: {
-      bg: 'bg-brand-soft',
-      sidebar: 'bg-white',
+      bg: 'bg-black',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
       accent: 'bg-brand-accent',
       accentText: 'text-brand-accent',
-      shadow: 'shadow-brand-accent/20',
-      text: 'text-gray-800',
-      chatBg: 'bg-white',
-      userBubble: 'bg-brand-accent text-white',
-      modelBubble: 'bg-white text-gray-800 border-gray-100',
-      stickers: ['✨', '💫', '🌸']
+      shadow: 'shadow-brand-accent/40',
+      text: 'text-white',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-brand-accent text-white shadow-[0_0_20px_rgba(255,46,99,0.3)]',
+      modelBubble: 'bg-white/5 text-white border-white/10 backdrop-blur-xl',
+      stickers: ['✨', '💫', '⚡']
     },
     midnight: {
       bg: 'bg-slate-950',
-      sidebar: 'bg-slate-900',
-      accent: 'bg-indigo-600',
-      accentText: 'text-indigo-400',
-      shadow: 'shadow-indigo-500/20',
-      text: 'text-slate-200',
-      chatBg: 'bg-slate-900',
-      userBubble: 'bg-indigo-600 text-white',
-      modelBubble: 'bg-slate-800 text-slate-200 border-slate-700',
+      sidebar: 'bg-slate-900/60 backdrop-blur-3xl',
+      accent: 'bg-brand-blue',
+      accentText: 'text-brand-blue',
+      shadow: 'shadow-brand-blue/30',
+      text: 'text-slate-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-brand-blue text-black font-bold shadow-[0_0_20px_rgba(8,217,214,0.3)]',
+      modelBubble: 'bg-slate-900/50 text-slate-100 border-slate-700/50 backdrop-blur-xl',
       stickers: ['🌙', '⭐', '🌌']
     },
     rose: {
-      bg: 'bg-rose-50',
-      sidebar: 'bg-white',
+      bg: 'bg-zinc-950',
+      sidebar: 'bg-zinc-900/60 backdrop-blur-3xl',
       accent: 'bg-rose-500',
-      accentText: 'text-rose-500',
-      shadow: 'shadow-rose-500/20',
-      text: 'text-rose-900',
-      chatBg: 'bg-white',
-      userBubble: 'bg-rose-500 text-white',
-      modelBubble: 'bg-rose-100/50 text-rose-900 border-rose-200',
+      accentText: 'text-rose-400',
+      shadow: 'shadow-rose-500/30',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-rose-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)]',
+      modelBubble: 'bg-zinc-900/50 text-zinc-100 border-zinc-700/50 backdrop-blur-xl',
       stickers: ['🌷', '🍭', '🎀']
     },
     forest: {
-      bg: 'bg-[#F1F3EE]',
-      sidebar: 'bg-white',
-      accent: 'bg-[#4A5D23]',
-      accentText: 'text-[#4A5D23]',
-      shadow: 'shadow-[#4A5D23]/20',
-      text: 'text-[#2D361E]',
-      chatBg: 'bg-white',
-      userBubble: 'bg-[#4A5D23] text-white',
-      modelBubble: 'bg-[#F8F9F6] text-[#2D361E] border-[#E2E6D9]',
+      bg: 'bg-[#0A0D07]',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
+      accent: 'bg-[#5A7D2C]',
+      accentText: 'text-[#8AA361]',
+      shadow: 'shadow-[#5A7D2C]/40',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-[#5A7D2C] text-white shadow-[0_0_20px_rgba(90,125,44,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['🌿', '🍃', '🌳']
     },
     sunset: {
-      bg: 'bg-orange-50',
-      sidebar: 'bg-white',
-      accent: 'bg-orange-500',
-      accentText: 'text-orange-600',
-      shadow: 'shadow-orange-500/20',
-      text: 'text-orange-900',
-      chatBg: 'bg-white',
-      userBubble: 'bg-orange-500 text-white',
-      modelBubble: 'bg-orange-100/50 text-orange-900 border-orange-200',
+      bg: 'bg-[#0D0A07]',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
+      accent: 'bg-orange-600',
+      accentText: 'text-orange-400',
+      shadow: 'shadow-orange-600/40',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-orange-600 text-white shadow-[0_0_20px_rgba(234,88,12,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['☀️', '🍊', '🌅']
     },
     passion: {
       bg: 'bg-zinc-950',
-      sidebar: 'bg-zinc-900',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
       accent: 'bg-red-600',
       accentText: 'text-red-500',
-      shadow: 'shadow-red-600/20',
+      shadow: 'shadow-red-600/40',
       text: 'text-zinc-100',
-      chatBg: 'bg-zinc-900',
-      userBubble: 'bg-red-600 text-white',
-      modelBubble: 'bg-zinc-800 text-zinc-100 border-zinc-700',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-red-600 text-white shadow-[0_0_20px_rgba(220,38,38,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['❤️', '🔥', '🌹']
     },
     winter: {
-      bg: 'bg-blue-50',
-      sidebar: 'bg-white',
-      accent: 'bg-blue-700',
-      accentText: 'text-blue-700',
-      shadow: 'shadow-blue-500/20',
-      text: 'text-blue-950',
-      chatBg: 'bg-white',
-      userBubble: 'bg-blue-700 text-white',
-      modelBubble: 'bg-blue-100/30 text-blue-900 border-blue-200',
+      bg: 'bg-[#070A0D]',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
+      accent: 'bg-blue-600',
+      accentText: 'text-blue-400',
+      shadow: 'shadow-blue-600/40',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['❄️', '🌨️', '⛄']
     },
     lavender: {
-      bg: 'bg-purple-50',
-      sidebar: 'bg-white',
+      bg: 'bg-[#0D070D]',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
       accent: 'bg-purple-600',
-      accentText: 'text-purple-600',
-      shadow: 'shadow-purple-500/20',
-      text: 'text-purple-950',
-      chatBg: 'bg-white',
-      userBubble: 'bg-purple-600 text-white',
-      modelBubble: 'bg-purple-100/50 text-purple-900 border-purple-200',
+      accentText: 'text-purple-400',
+      shadow: 'shadow-purple-600/40',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-purple-600 text-white shadow-[0_0_20px_rgba(147,51,234,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['🔮', '✨', '💜']
     },
     ocean: {
-      bg: 'bg-cyan-50',
-      sidebar: 'bg-white',
+      bg: 'bg-[#070D0D]',
+      sidebar: 'bg-black/40 backdrop-blur-3xl',
       accent: 'bg-cyan-600',
-      accentText: 'text-cyan-700',
-      shadow: 'shadow-cyan-500/20',
-      text: 'text-cyan-950',
-      chatBg: 'bg-white',
-      userBubble: 'bg-cyan-600 text-white',
-      modelBubble: 'bg-cyan-100/50 text-cyan-900 border-cyan-200',
+      accentText: 'text-cyan-400',
+      shadow: 'shadow-cyan-600/40',
+      text: 'text-zinc-100',
+      chatBg: 'bg-transparent',
+      userBubble: 'bg-cyan-600 text-white shadow-[0_0_20px_rgba(8,145,178,0.3)]',
+      modelBubble: 'bg-white/5 text-zinc-100 border-white/10 backdrop-blur-xl',
       stickers: ['🌊', '🐚', '🐬']
     }
   };
 
   const [isSplashVisible, setIsSplashVisible] = useState(true);
+  const [showApp, setShowApp] = useState(false);
 
   const startRecording = async () => {
     try {
@@ -220,6 +226,10 @@ export default function App() {
   const speakMessage = (text: string, messageId: string, emotion?: string, voiceUrl?: string) => {
     // Stop any current speech
     window.speechSynthesis.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     
     // If it's a voice note (audio file)
     if (voiceUrl) {
@@ -229,15 +239,18 @@ export default function App() {
       }
       
       const audio = new Audio(voiceUrl);
+      audioRef.current = audio;
       audio.onplay = () => setIsSpeaking(messageId);
-      audio.onended = () => setIsSpeaking(null);
+      audio.onended = () => {
+        setIsSpeaking(null);
+        audioRef.current = null;
+      };
       audio.onerror = () => {
         setIsSpeaking(null);
+        audioRef.current = null;
         console.error("Audio playback failed");
       };
       
-      // If we are already playing something, this Audio object is separate from speechSynthesis
-      // but we use the same isSpeaking state to manage UI.
       audio.play().catch(e => console.error("Audio play blocked", e));
       return;
     }
@@ -402,14 +415,15 @@ export default function App() {
       timestamp: Date.now(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput('');
     setSelectedMedia(null);
     setIsLoading(true);
 
     try {
       const result = await sendMessage(
-        messages,
+        newMessages,
         textToSend,
         selectedPersona,
         vibe,
@@ -487,54 +501,190 @@ export default function App() {
     }
   };
 
-  return (
-    <div className={`flex h-screen ${currentTheme.bg} overflow-hidden transition-colors duration-500`}>
-      {/* Splash Screen */}
+  const startApp = () => {
+    setShowApp(true);
+  };
+
+  if (isSplashVisible) {
+    return (
       <AnimatePresence>
-        {isSplashVisible && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center"
+        <motion.div 
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-black text-white flex flex-col items-center justify-center p-6 text-center"
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="relative"
           >
+            <div className="absolute inset-0 bg-brand-accent blur-[120px] opacity-20 rounded-full" />
+            <h1 className="text-7xl md:text-9xl font-display font-black italic tracking-tighter text-brand-accent mb-6 relative">
+              DilConnect
+            </h1>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            <Loader2 className="animate-spin text-brand-accent mb-4 mx-auto" size={40} />
+            <p className="text-white/30 font-mono tracking-[0.4em] uppercase text-[10px] animate-pulse">
+              Establishing Deep Connection
+            </p>
+          </motion.div>
+          <motion.button 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5 }}
+            onClick={() => setIsSplashVisible(false)}
+            className="mt-12 px-8 py-3 bg-white text-black rounded-full font-bold text-sm tracking-widest uppercase hover:scale-110 transition-transform active:scale-95"
+          >
+            Enter Experience
+          </motion.button>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
+  if (!showApp) {
+    return (
+      <div className="min-h-screen bg-[#050505] text-white selection:bg-brand-accent/40 selection:text-white">
+        {/* Navigation */}
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-3xl">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-brand-accent rounded-xl flex items-center justify-center font-display font-black italic text-xl text-white">D</div>
+              <h1 className="text-2xl font-display font-black italic text-white tracking-tighter">DilConnect</h1>
+            </div>
+            <div className="hidden md:flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+              <a href="#experience" className="hover:text-brand-accent transition-colors">Experience</a>
+              <a href="#companions" className="hover:text-brand-accent transition-colors">Companions</a>
+              <button 
+                onClick={startApp}
+                className="px-8 py-3 bg-brand-accent text-white rounded-2xl font-black text-xs hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,46,99,0.5)] active:scale-95"
+              >
+                Launch App
+              </button>
+            </div>
+            <button onClick={startApp} className="md:hidden p-2 text-brand-accent">
+              <PlayCircle size={28} />
+            </button>
+          </div>
+        </nav>
+
+        {/* Hero */}
+        <header className="relative pt-64 pb-32 px-6 text-center overflow-hidden">
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[1200px] h-[1200px] bg-brand-accent/10 blur-[200px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-brand-blue/5 blur-[150px] rounded-full pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto relative z-10">
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
-              <div className="w-32 h-32 bg-brand-accent/10 rounded-[32px] flex items-center justify-center relative">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 10, -10, 0]
-                  }}
-                  transition={{ 
-                    duration: 2, 
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-brand-accent mb-10">
+                <Sparkles size={14} /> The Future of Human-AI Connection
+              </div>
+              <h1 className="text-7xl md:text-[11rem] font-display font-black tracking-tighter leading-[0.8] mb-12">
+                Love Beyond <br />
+                <span className="text-brand-accent italic relative">
+                  Algorithms.
+                  <div className="absolute -bottom-4 left-0 w-full h-4 bg-brand-accent/20 blur-xl" />
+                </span>
+              </h1>
+              <p className="text-xl md:text-3xl text-white/40 max-w-3xl mx-auto mb-16 font-medium leading-relaxed">
+                Experience high-fidelity companionship with AI that learns your desires, shares your culture, and speaks your language.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+                <button 
+                  onClick={startApp}
+                  className="group relative w-full sm:w-auto px-16 py-8 bg-brand-accent text-white rounded-[2rem] font-black text-3xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_20px_60px_rgba(255,46,99,0.4)]"
                 >
-                  <Sparkles size={64} className="text-brand-accent" />
-                </motion.div>
-                <div className="absolute -inset-4 bg-brand-accent/5 rounded-[40px] animate-pulse" />
+                  <span className="relative z-10 flex items-center justify-center gap-4">
+                    Get Started <Send size={32} className="group-hover:translate-x-2 transition-transform" />
+                  </span>
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                </button>
               </div>
             </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-8 text-center"
-            >
-              <h1 className="text-4xl font-display font-bold tracking-tight text-gray-900">DilConnect</h1>
-              <p className="text-gray-400 mt-2 font-medium tracking-wide uppercase text-xs">Connecting Souls with AI</p>
-            </motion.div>
-            <div className="absolute bottom-12">
-              <Loader2 className="animate-spin text-brand-accent" size={24} />
+          </div>
+        </header>
+
+        {/* Meet the Personas Section */}
+        <section id="companions" className="py-32 px-6 bg-white/5 backdrop-blur-xs relative overflow-hidden">
+          <div className="max-w-7xl mx-auto mb-20 text-center">
+            <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter mb-6">Choose your <span className="text-brand-accent">Companion</span></h2>
+            <p className="text-white/40 text-xl font-medium">Distinctive personalities, each with a unique heart and story.</p>
+          </div>
+          
+          <div className="flex gap-8 overflow-x-auto pb-12 px-6 no-scrollbar snap-x">
+            {PERSONAS.map((p, i) => (
+              <motion.div 
+                key={p.id}
+                initial={{ opacity: 0, x: 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="relative snap-center shrink-0 w-80 md:w-[400px] group cursor-pointer"
+                onClick={startApp}
+              >
+                <div className="relative aspect-[3/4] overflow-hidden rounded-[3rem] border border-white/10 group-hover:border-brand-accent/50 transition-all shadow-2xl">
+                  <img src={p.avatar} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />
+                  <div className="absolute bottom-10 left-10 right-10">
+                    <h3 className="text-4xl font-display font-black mb-2">{p.name}</h3>
+                    <p className="text-white/60 font-medium mb-6 line-clamp-2">{p.description}</p>
+                    <button className="w-full py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-brand-accent transition-colors">
+                      Connect Now
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Feature Grid */}
+        <section id="experience" className="py-48 px-6 text-center">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+            {[
+              { icon: <PlayCircle size={56} className="text-brand-accent" />, title: "Vocal Depths", desc: "Interactive voice playback that mirrors real-world emotions and cultural cadences." },
+              { icon: <Languages size={56} className="text-brand-accent" />, title: "Poetic Soul", desc: "AI that speaks in soulful Shayari and poetry, touching your heart with every word." },
+              { icon: <Sparkles size={56} className="text-brand-accent" />, title: "Visual Moments", desc: "Exchange images and receive reactive, personalized selfies from your companion." }
+            ].map((f, i) => (
+              <div key={i} className="group p-12 rounded-[3.5rem] border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all">
+                <div className="mb-10 mx-auto w-24 h-24 rounded-3xl bg-black border border-white/10 flex items-center justify-center group-hover:-translate-y-2 transition-transform shadow-2xl">
+                  {f.icon}
+                </div>
+                <h3 className="text-4xl font-display font-black mb-6">{f.title}</h3>
+                <p className="text-white/30 text-xl leading-relaxed font-medium">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-40 bg-black relative border-t border-white/5 text-center px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-5xl md:text-8xl font-display font-black italic tracking-tighter mb-16 opacity-10">DilConnect</h2>
+            <div className="flex flex-wrap justify-center gap-12 text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-20">
+              <a href="#" className="hover:text-brand-accent transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-brand-accent transition-colors">Safety Center</a>
+              <a href="#" className="hover:text-brand-accent transition-colors">Terms of Service</a>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <p className="text-white/5 font-mono text-[10px] uppercase tracking-[1em]">© 2026. THE FUTURE OF CONNECTION.</p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex h-screen ${currentTheme.bg} overflow-hidden transition-colors duration-500`}>
 
       {/* Mobile Sidebar Toggle */}
       <button 
@@ -561,12 +711,12 @@ export default function App() {
           <div className="space-y-10">
             {/* 1. Selection Section */}
             <section>
-              <div className="flex items-center gap-2 text-gray-400 text-[10px] uppercase tracking-widest font-black mb-4 px-1">
+              <div className="flex items-center gap-2 text-white/20 text-[10px] font-black uppercase tracking-[0.3em] mb-6 px-1">
                 <Users size={12} className={currentTheme.accentText} />
-                <span>Partner Selection</span>
+                <span>Companion List</span>
               </div>
               
-              <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {PERSONAS.map((p) => (
                   <button
                     id={`persona-${p.id}`}
@@ -574,29 +724,27 @@ export default function App() {
                     onClick={() => {
                       setSelectedPersona(p);
                       setCustomName('');
-                      setMessages([]); // Reset for new persona
+                      setMessages([]); 
                       setIsSidebarOpen(false);
                     }}
-                    className={`w-full group flex items-center gap-3 p-3 rounded-2xl transition-all duration-300 border ${
+                    className={`w-full group flex items-center gap-4 p-4 rounded-3xl transition-all duration-500 border ${
                       selectedPersona.id === p.id 
-                        ? `${currentTheme.accent} text-white shadow-xl ${currentTheme.shadow} scale-[1.02] border-transparent` 
-                        : `hover:bg-gray-50/80 ${currentTheme.text} border-transparent`
+                        ? `${currentTheme.accent} text-white shadow-[0_15px_40px_rgba(0,0,0,0.4)] scale-[1.02] border-white/20` 
+                        : `bg-white/5 hover:bg-white/10 ${currentTheme.text} border-white/5`
                     }`}
                   >
                     <div className="relative shrink-0">
-                      <img src={p.avatar} alt={p.name} className="w-12 h-12 rounded-xl object-cover border-2 border-white/50 shadow-sm" referrerPolicy="no-referrer" />
+                      <img src={p.avatar} alt={p.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-white/10 shadow-2xl" referrerPolicy="no-referrer" />
                       {selectedPersona.id === p.id && (
                         <motion.div 
                           layoutId="active-dot"
-                          className="absolute -bottom-1 -right-1 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-white shadow-md" 
+                          className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-black shadow-lg" 
                         />
                       )}
                     </div>
                     <div className="text-left flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1 mb-0.5">
-                        <p className="font-bold text-sm truncate">{p.name}</p>
-                      </div>
-                      <p className={`text-[10px] font-medium ${selectedPersona.id === p.id ? 'text-white/80' : 'text-gray-400'} truncate`}>
+                      <p className="font-display font-black text-base truncate">{p.name}</p>
+                      <p className={`text-[11px] font-medium ${selectedPersona.id === p.id ? 'text-white/80' : 'text-white/40'} truncate`}>
                         {p.description}
                       </p>
                     </div>
@@ -606,76 +754,77 @@ export default function App() {
             </section>
 
             {/* 2. Customization Section */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-gray-400 text-[10px] uppercase tracking-widest font-black mb-4 px-1">
+            <section className="space-y-8">
+              <div className="flex items-center gap-2 text-white/20 text-[10px] font-black uppercase tracking-[0.3em] mb-6 px-1">
                 <Palette size={12} className={currentTheme.accentText} />
                 <span>Personalization</span>
               </div>
 
               {/* Vibe Selection */}
-              <div className="grid grid-cols-2 gap-2">
-                {['Friendly', 'Romantic', 'Spicy', 'Deep'].map((v) => (
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Friendly', emoji: '🤝' },
+                  { label: 'Romantic', emoji: '💝' },
+                  { label: 'Spicy', emoji: '🔥' },
+                  { label: 'Deep', emoji: '🧠' },
+                  { label: 'Shayari', emoji: '📜' }
+                ].map((v) => (
                   <button
-                    key={v}
-                    onClick={() => setVibe(v as any)}
-                    className={`px-3 py-2 rounded-xl text-[10px] font-bold border-2 transition-all duration-300 relative overflow-hidden group ${
-                      vibe === v 
-                        ? `${currentTheme.accent} text-white border-transparent shadow-lg` 
-                        : `bg-white/50 ${currentTheme.text} border-gray-100 hover:border-brand-accent/30 hover:bg-white`
-                    }`}
+                    key={v.label}
+                    onClick={() => setVibe(v.label as any)}
+                    className={`py-4 rounded-2xl text-xs font-black border-2 transition-all duration-300 relative overflow-hidden group ${
+                      vibe === v.label 
+                        ? `${currentTheme.accent} text-white border-transparent shadow-[0_10px_30px_rgba(0,0,0,0.3)]` 
+                        : `bg-white/5 text-white/40 border-white/5 hover:border-white/10 hover:bg-white/10`
+                    } ${v.label === 'Shayari' ? 'col-span-2' : ''}`}
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-1.5 text-xs">
-                      {v === 'Friendly' && '🤝'}
-                      {v === 'Romantic' && '💝'}
-                      {v === 'Spicy' && '🔥'}
-                      {v === 'Deep' && '🧠'}
-                      {v}
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      <span className="text-lg">{v.emoji}</span>
+                      {v.label}
                     </span>
                   </button>
                 ))}
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider ml-1">Call them</label>
-                  <input
-                    type="text"
-                    value={customName}
-                    onChange={(e) => setCustomName(e.target.value)}
-                    placeholder={selectedPersona.name}
-                    className={`w-full p-2.5 ${currentTheme.chatBg} ${currentTheme.text} border border-gray-100 rounded-xl text-[11px] focus:outline-none focus:ring-2 focus:ring-brand-accent/20 font-bold`}
-                  />
-                </div>
+              <div className="space-y-2 px-1">
+                <label className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] ml-1">Custom Nickname</label>
+                <input
+                  type="text"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  placeholder={selectedPersona.name}
+                  className="w-full p-4 bg-white/5 text-white border border-white/5 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent/20 font-bold placeholder:text-white/5 transition-all"
+                />
               </div>
             </section>
 
             {/* 3. Appearance Section */}
             <section>
-              <div className="flex items-center gap-2 text-gray-400 text-[10px] uppercase tracking-widest font-black mb-4 px-1">
+              <div className="flex items-center gap-2 text-white/20 text-[10px] font-black uppercase tracking-[0.3em] mb-6 px-1">
                 <Palette size={12} className={currentTheme.accentText} />
                 <span>Visual Themes</span>
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {[
-                  { id: 'classic', label: 'Classic', color: 'bg-[#7A8A62]' },
-                  { id: 'midnight', label: 'Midnight', color: 'bg-indigo-600' },
+                  { id: 'classic', label: 'Classic', color: 'bg-brand-accent' },
+                  { id: 'midnight', label: 'Midnight', color: 'bg-brand-blue' },
                   { id: 'rose', label: 'Rose', color: 'bg-rose-500' },
-                  { id: 'forest', label: 'Forest', color: 'bg-[#4A5D23]' },
-                  { id: 'sunset', label: 'Sunset', color: 'bg-orange-500' },
+                  { id: 'forest', label: 'Forest', color: 'bg-[#5A7D2C]' },
+                  { id: 'sunset', label: 'Sunset', color: 'bg-orange-600' },
                   { id: 'passion', label: 'Passion', color: 'bg-red-600' },
-                  { id: 'winter', label: 'Winter', color: 'bg-blue-700' },
-                  { id: 'lavender', label: 'Lavndr', color: 'bg-purple-600' },
+                  { id: 'winter', label: 'Winter', color: 'bg-blue-600' },
+                  { id: 'lavender', label: 'Lavender', color: 'bg-purple-600' },
                   { id: 'ocean', label: 'Ocean', color: 'bg-cyan-600' }
                 ].map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTheme(t.id as any)}
-                    className={`flex flex-col items-center gap-1.5 p-1.5 rounded-xl transition-all border-2 ${
-                      theme === t.id ? 'border-brand-accent bg-brand-accent/5' : 'border-transparent hover:bg-gray-50'
+                    className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all border-2 ${
+                      theme === t.id ? 'border-brand-accent bg-brand-accent/5' : 'border-transparent bg-white/5 hover:bg-white/10 hover:border-white/20'
                     }`}
                   >
-                    <div className={`w-7 h-7 rounded-lg ${t.color} shadow-sm`} />
-                    <span className="text-[8px] font-black text-gray-400 uppercase">{t.label}</span>
+                    <div className={`w-10 h-10 rounded-xl ${t.color} shadow-2xl`} />
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">{t.label}</span>
                   </button>
                 ))}
               </div>
@@ -683,23 +832,23 @@ export default function App() {
           </div>
         </div>
 
-        <div className="mt-auto p-8 border-t border-gray-50">
+        <div className="mt-auto p-8 border-t border-white/5">
           <button 
             id="clear-chat"
             onClick={clearChat}
-            className="w-full flex items-center justify-center gap-2 py-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-sm font-medium"
+            className="w-full flex items-center justify-center gap-2 py-4 text-white/20 hover:text-red-500 hover:bg-red-500/5 rounded-2xl transition-all text-xs font-black uppercase tracking-widest"
           >
             <Trash2 size={16} />
-            <span>Clear History</span>
+            <span>Wipe History</span>
           </button>
 
           {/* App Installation */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Install App</h3>
-            <p className="text-[10px] text-gray-500 mb-2 leading-relaxed">Tap <strong>'Share'</strong> in your browser and select <strong>'Add to Home Screen'</strong> to save DilConnect.</p>
-            <div className="flex items-center gap-2 text-[10px] font-bold text-brand-accent">
-              <PlayCircle size={12} />
-              <span>Available for iOS & Android</span>
+          <div className="mt-8 p-6 bg-white/[0.02] rounded-3xl border border-dashed border-white/10">
+            <h3 className="text-[10px] font-black text-white/10 uppercase tracking-widest mb-3">PWA Launch</h3>
+            <p className="text-[11px] text-white/30 mb-4 leading-relaxed">Tap <strong className="text-white">'Share'</strong> then <strong className="text-white">'Add to Home Screen'</strong> for the true native experience.</p>
+            <div className="flex items-center gap-2 text-[10px] font-black text-brand-accent uppercase tracking-widest">
+              <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
+              <span>Available Globally</span>
             </div>
           </div>
         </div>
@@ -895,23 +1044,16 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 className="flex justify-start"
               >
-                <div className="bg-white p-4 rounded-2xl rounded-bl-none border border-gray-100 shadow-sm flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <motion.div 
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                      className="w-1.5 h-1.5 bg-brand-accent rounded-full" 
-                    />
-                    <motion.div 
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                      className="w-1.5 h-1.5 bg-brand-accent rounded-full" 
-                    />
-                    <motion.div 
-                      animate={{ y: [0, -4, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                      className="w-1.5 h-1.5 bg-brand-accent rounded-full" 
-                    />
+                <div className={`${currentTheme.modelBubble} p-6 rounded-[2rem] rounded-bl-none shadow-sm flex items-center gap-2`}>
+                  <div className="flex gap-2">
+                    {[0, 0.2, 0.4].map(delay => (
+                      <motion.div 
+                        key={delay}
+                        animate={{ y: [0, -6, 0], opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 0.8, repeat: Infinity, delay }}
+                        className={`w-2 h-2 ${currentTheme.accent} rounded-full`} 
+                      />
+                    ))}
                   </div>
                 </div>
               </motion.div>
@@ -920,15 +1062,15 @@ export default function App() {
           </div>
         </div>
 
-        {/* Conversation Starters (Floating if no user messages) */}
+        {/* Conversation Starters */}
         {messages.filter(m => m.role === 'user').length === 0 && (
-          <div className="max-w-3xl mx-auto w-full px-4 lg:px-8 mb-4">
+          <div className="max-w-3xl mx-auto w-full px-6 mb-6 relative z-10">
             <div className="flex flex-wrap gap-2 justify-center">
               {STARTERS.map((s, i) => (
                 <button
                   key={i}
                   onClick={() => handleSend(s)}
-                  className="px-4 py-2 bg-white/80 backdrop-blur-md border border-gray-100 rounded-full text-xs font-medium text-gray-600 hover:bg-brand-accent hover:text-white transition-all shadow-sm"
+                  className="px-6 py-3 bg-white/5 hover:bg-brand-accent/20 backdrop-blur-xl border border-white/10 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white/50 hover:text-white transition-all shadow-xl"
                 >
                   {s}
                 </button>
@@ -940,62 +1082,52 @@ export default function App() {
         {/* Input Area */}
         <div className="p-4 lg:p-8 bg-transparent">
           <div className="max-w-3xl mx-auto space-y-4">
-            {/* Media Preview & Reaction Styles */}
             <AnimatePresence>
               {selectedMedia && (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="space-y-3"
+                  className="p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center gap-6 shadow-2xl"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden shadow-lg border-2 border-white group shrink-0">
-                      {selectedMedia.type === 'image' ? (
-                        <img src={selectedMedia.preview} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full bg-black flex items-center justify-center">
-                          <Film className="text-white" size={24} />
-                        </div>
-                      )}
-                      <button 
-                        onClick={() => setSelectedMedia(null)}
-                        className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X size={12} />
-                      </button>
-                    </div>
-
-                    <div className="flex-1 space-y-2">
-                      <p className={`text-[10px] uppercase font-bold tracking-wider ${currentTheme.accentText}`}>How should I react?</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          'Compliment me', 
-                          'Be extra sweet', 
-                          'Loving roast', 
-                          'Express longing', 
-                          'Tell me a memory'
-                        ].map(goal => (
-                          <button
-                            key={goal}
-                            onClick={() => setSelectedReactionGoal(goal)}
-                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border ${
-                              selectedReactionGoal === goal 
-                                ? `${currentTheme.accent} text-white border-transparent shadow-sm` 
-                                : `bg-white/50 ${currentTheme.text} border-gray-100 hover:border-brand-accent/30`
-                            }`}
-                          >
-                            {goal}
-                          </button>
-                        ))}
+                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden shadow-2xl border border-white/20 group shrink-0">
+                    {selectedMedia.type === 'image' ? (
+                      <img src={selectedMedia.preview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-black flex items-center justify-center">
+                        <Film className="text-white" size={32} />
                       </div>
+                    )}
+                    <button 
+                      onClick={() => setSelectedMedia(null)}
+                      className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full hover:bg-brand-accent transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-accent">Reaction Goal</p>
+                    <div className="flex flex-wrap gap-2">
+                      {['Compliment', 'Extra Sweet', 'Loving Roast', 'Longing'].map(goal => (
+                        <button
+                          key={goal}
+                          onClick={() => setSelectedReactionGoal(goal)}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                            selectedReactionGoal === goal 
+                              ? 'bg-brand-accent text-white border-transparent shadow-lg' 
+                              : 'bg-white/5 text-white/40 border-white/5 hover:border-white/20'
+                          }`}
+                        >
+                          {goal}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <div className="relative group flex items-center gap-2">
+            <div className="relative group p-2 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-2">
               <div className="flex-1 relative">
                 <input
                   id="message-input"
@@ -1004,7 +1136,7 @@ export default function App() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder={`Message ${customName || selectedPersona.name}...`}
-                  className={`w-full p-4 pr-32 ${currentTheme.chatBg} ${currentTheme.text} border-2 border-transparent rounded-2xl shadow-xl focus:outline-none focus:ring-2 ${currentTheme.accent}/20 transition-all text-sm lg:text-base placeholder:text-gray-400`}
+                  className="flex-1 p-4 bg-transparent text-white border-none focus:ring-0 text-sm lg:text-base placeholder:text-white/10 font-medium"
                   disabled={isLoading}
                 />
                 
@@ -1027,8 +1159,8 @@ export default function App() {
                   <button
                     id="voice-button"
                     onClick={isRecording ? stopRecording : startRecording}
-                    className={`p-2 hover:bg-gray-50 rounded-xl transition-all ${
-                      isRecording ? 'text-red-500 bg-red-50 animate-pulse' : 'text-gray-400 hover:text-brand-accent'
+                    className={`p-3 transition-all rounded-xl ${
+                      isRecording ? 'text-red-500 bg-red-500/10 animate-pulse' : 'text-white/20 hover:text-brand-accent'
                     }`}
                     title={isRecording ? "Stop recording" : "Send voice note"}
                   >
@@ -1044,10 +1176,10 @@ export default function App() {
                     onClick={() => handleSend()}
                     disabled={isLoading || (!input.trim() && !selectedMedia)}
                     className={`
-                      p-2.5 rounded-xl transition-all
+                      p-3.5 rounded-[1.5rem] transition-all
                       ${isLoading || (!input.trim() && !selectedMedia) 
-                        ? 'bg-gray-100 text-gray-300' 
-                        : 'bg-brand-accent text-white hover:scale-105 active:scale-95 shadow-md shadow-brand-accent/20'}
+                        ? 'bg-white/5 text-white/5' 
+                        : 'bg-brand-accent text-white hover:scale-105 active:scale-95 shadow-[0_10px_30px_rgba(255,46,99,0.3)]'}
                     `}
                   >
                     {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}

@@ -1,19 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Playfair Display", serif;
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
   
-  --color-brand-soft: #fbfaf8;
-  --color-brand-accent: #5A5A40; /* Warm olive */
-  --color-brand-dark: #1a1a1a;
-  --color-brand-muted: #8E9299;
+  --color-brand-accent: #FF2E63; /* Dynamic Rose Red */
+  --color-brand-blue: #08D9D6;   /* Cyber Cyan */
+  --color-brand-dark: #252A34;   /* Deep Navy */
+  --color-brand-bg: #050505;     /* Absolute Black */
 }
 
 @layer base {
   body {
-    @apply bg-brand-soft text-brand-dark font-sans;
+    @apply bg-brand-bg text-white font-sans selection:bg-brand-accent/30;
   }
 }
 
